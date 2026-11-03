@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emperor Book Market — Kitoblar Do'koni</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root { --uzum-purple: #7000FF; }
+        .bg-uzum { background-color: var(--uzum-purple); }
+        .text-uzum { color: var(--uzum-purple); }
+        .border-uzum { border-color: var(--uzum-purple); }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans pb-20">
+
+    <!-- TOP BAR (Aloqa va Kanal ma'lumotlari) -->
+    <div class="bg-gray-900 text-white text-xs py-2 px-4">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2">
+            <div class="flex items-center gap-4">
+                <span>📞 Aloqa raqam: <b class="text-yellow-400">+998 77 143 12 79</b></span>
+                <span class="hidden md:inline">|</span>
+                <span>📦 O'zbekiston bo'ylab yetkazib berish</span>
+            </div>
+            <div>
+                <a href="https://t.me/shahriyor1fayzullayev" target="_blank" class="hover:text-purple-400 font-medium flex items-center gap-1.5">
+                    <i class="fab fa-telegram text-sky-400"></i> Kanalimiz: <b>@shahriyor1fayzullayev</b>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+            <a href="#" class="flex items-center gap-2">
+                <div class="w-10 h-10 rounded-xl bg-uzum text-white flex items-center justify-center text-xl font-black">📚</div>
+                <div>
+                    <h1 class="text-lg font-bold leading-none">EMPEROR</h1>
+                    <span class="text-[10px] font-semibold text-uzum uppercase tracking-widest">BOOK MARKET</span>
+                </div>
+            </a>
+
+            <!-- Search -->
+            <div class="flex-1 max-w-xl">
+                <input type="text" id="searchInput" oninput="searchBooks()" placeholder="Kitoblar yoki muallifni izlang..." 
+                    class="w-full px-4 py-2 bg-gray-100 border border-transparent rounded-lg text-sm focus:outline-none focus:bg-white focus:border-purple-600">
+            </div>
+
+            <!-- Cart button -->
+            <button onclick="toggleCart()" class="relative flex items-center gap-2 bg-purple-50 text-purple-700 px-4 py-2 rounded-xl font-semibold text-sm hover:bg-purple-100 transition">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Savat</span>
+                <span id="cartCount" class="bg-uzum text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">0</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 mt-6">
+        <!-- Banner -->
+        <div class="rounded-2xl bg-gradient-to-r from-purple-700 to-indigo-800 text-white p-6 md:p-8 mb-8 shadow-lg flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <span class="bg-yellow-400 text-gray-900 text-xs font-bold px-2.5 py-1 rounded-md uppercase">Bestsellerlar</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold mt-2">Eng sara va o'qishga arziydigan kitoblar</h2>
+                <p class="text-purple-100 text-sm mt-1">Buyurtma berish uchun kanalimizga obuna bo'ling: <a href="https://t.me/shahriyor1fayzullayev" target="_blank" class="underline font-bold text-yellow-300">@shahriyor1fayzullayev</a></p>
+            </div>
+            <a href="https://t.me/shahriyor1fayzullayev" target="_blank" class="bg-white text-purple-700 font-bold px-5 py-3 rounded-xl hover:bg-gray-100 transition whitespace-nowrap shadow-md">
+                <i class="fab fa-telegram text-sky-500 mr-1"></i> Telegram Kanal
+            </a>
+        </div>
+
+        <h3 class="text-xl font-bold mb-4">Barcha kitoblar</h3>
+
+        <!-- Products Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="booksGrid">
+            <!-- JavaScript orqali to'ldiriladi -->
+        </div>
+    </main>
+
+    <!-- CART MODAL -->
+    <div id="cartModal" class="fixed inset-0 bg-black/50 hidden z-50 flex justify-end">
+        <div class="bg-white w-full max-w-md h-full p-6 flex flex-col justify-between shadow-xl">
+            <div>
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold">Sizning savatingiz</h3>
+                    <button onclick="toggleCart()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times text-lg"></i></button>
+                </div>
+                <div id="cartItems" class="space-y-4 overflow-y-auto max-h-[50vh]">
+                    <!-- Savat elementlari -->
+                </div>
+            </div>
+            <div class="border-t pt-4">
+                <div class="flex justify-between font-bold text-lg mb-4">
+                    <span>Jami:</span>
+                    <span id="cartTotal" class="text-uzum">0 so'm</span>
+                </div>
+                <button onclick="checkout()" class="w-full bg-uzum text-white font-bold py-3 rounded-xl hover:bg-purple-700 transition">
+                    Buyurtma berish 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const books = [
+            { id: 1, title: "Atom Odatlari", author: "James Clear", price: 65000, emoji: "📘" },
+            { id: 2, title: "Sariq devni minib", author: "Xudoyberdi To'xtaboyev", price: 45000, emoji: "📗" },
+            { id: 3, title: "Diqqat (Deep Work)", author: "Cal Newport", price: 58000, emoji: "📙" },
+            { id: 4, title: "O'tkan Kunlar", author: "Abdulla Qodiriy", price: 48000, emoji: "📕" },
+            { id: 5, title: "Boy Ota, Kambag'al Ota", author: "Robert Kiyosaki", price: 60000, emoji: "📘" },
+            { id: 6, title: "Ijtimoiy Odoblar", author: "Shayx Muhammad Sodiq", price: 75000, emoji: "📗" }
+        ];
+
+        let cart = [];
+
+        function renderBooks(items) {
+            const grid = document.getElementById('booksGrid');
+            grid.innerHTML = items.map(b => `
+                <div class="bg-white rounded-xl p-3 border border-gray-100 hover:shadow-md transition flex flex-col justify-between">
+                    <div>
+                        <div class="bg-gray-100 h-40 rounded-lg flex items-center justify-center text-5xl mb-3">${b.emoji}</div>
+                        <h4 class="font-semibold text-sm text-gray-900 line-clamp-2">${b.title}</h4>
+                        <p class="text-xs text-gray-500 mt-0.5">${b.author}</p>
+                    </div>
+                    <div class="mt-4 pt-2 border-t flex items-center justify-between">
+                        <span class="font-bold text-sm text-gray-900">${b.price.toLocaleString()} so'm</span>
+                        <button onclick="addToCart(${b.id})" class="w-8 h-8 rounded-lg bg-uzum text-white flex items-center justify-center hover:bg-purple-700">
+                            <i class="fas fa-plus text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(id) {
+            const book = books.find(b => b.id === id);
+            cart.push(book);
+            document.getElementById('cartCount').innerText = cart.length;
+            updateCartUI();
+            alert(`"${book.title}" savatga qo'shildi!`);
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('hidden');
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cartItems');
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-gray-400 text-center py-8">Savat bo'sh</p>`;
+                document.getElementById('cartTotal').innerText = '0 so\'m';
+                return;
+            }
+            let total = 0;
+            container.innerHTML = cart.map((item, index) => {
+                total += item.price;
+                return `
+                    <div class="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                        <div>
+                            <h5 class="font-bold text-sm">${item.title}</h5>
+                            <span class="text-xs text-gray-500">${item.price.toLocaleString()} so'm</span>
+                        </div>
+                        <button onclick="removeItem(${index})" class="text-red-500 text-xs font-semibold">O'chirish</button>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('cartTotal').innerText = total.toLocaleString() + ' so\'m';
+        }
+
+        function removeItem(index) {
+            cart.splice(index, 1);
+            document.getElementById('cartCount').innerText = cart.length;
+            updateCartUI();
+        }
+
+        function checkout() {
+            if (cart.length === 0) return alert("Savat bo'sh!");
+            let name = prompt("Ismingizni kiriting:");
+            let phone = prompt("Telefon raqamingizni kiriting (+998...):");
+            if (name && phone) {
+                alert(`Rahmat ${name}! Buyurtmangiz qabul qilindi.\n\nSavollar bo'yicha biz bilan bog'laning:\nTel: +998 77 143 12 79\nKanal: @shahriyor1fayzullayev`);
+                cart = [];
+                document.getElementById('cartCount').innerText = 0;
+                toggleCart();
+            }
+        }
+
+        function searchBooks() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            renderBooks(books.filter(b => b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query)));
+        }
+
+        renderBooks(books);
+    </script>
+</body>
+</html>
